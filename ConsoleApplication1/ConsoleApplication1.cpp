@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <clocale>
 #include <vector>
+#include <utility>
 
 using namespace std;
 
@@ -56,11 +57,48 @@ void bubble_sort(vector<int>* mass) {
         }
     }
 
+void selection_sort(vector<int>* mass) {
+    int static_min_on_segment = (*mass)[0];
+
+    for (int i = 0; i < (*mass).size(); i++) {
+        static_min_on_segment = max(static_min_on_segment, (*mass)[i]);
+    }
+
+    for (int i = 0; i < (*mass).size()-1; i++) {
+        int min_on_segment = static_min_on_segment;
+        int index_min_on_segment = 0;
+        bool be_swap = false;
+        for (int j = i; j < (*mass).size(); j++) {
+            if (min_on_segment > (*mass)[j]) {
+                min_on_segment = (*mass)[j];
+                index_min_on_segment = j;
+                be_swap = true;
+            }
+        }
+
+        swap((*mass)[i], (*mass)[index_min_on_segment]);
+        cout << "\n";
+        for (int k = 0; k < (*mass).size(); k++) {
+            if ((k == i) || (k == index_min_on_segment)) {
+                cout << "[" << (*mass)[k] << "]" << " ";
+            }
+            else {
+                cout << (*mass)[k] << " ";
+            }
+        }
+        index_min_on_segment = static_min_on_segment;
+        cout << "\n";
+    }
+    cout << "\n";
+    
+    
+}
+
 int main() {
-    vector<int> mass = { 9, 8, 7, 6, 5 };
+    vector<int> mass = { 1, 2, 3, 5, 4 };
     setlocale(LC_ALL, "RU");
 
-    bubble_sort(&mass);
+    selection_sort(&mass);
 
     menu();
     return 0;
