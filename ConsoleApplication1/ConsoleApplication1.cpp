@@ -21,8 +21,7 @@ void print_mass(vector<int> mass){
 }
 
 void bubble_sort(vector<int>* mass) {
-    cout << "Исходный массив: ";
-    print_mass(*mass);
+    cout << "Сортировка пузырьком\n";
     cout << "\n";
     for (int i = 0; i < (*mass).size() - 1; i++) {
         bool be_swap = false;
@@ -58,6 +57,7 @@ void bubble_sort(vector<int>* mass) {
     }
 
 void selection_sort(vector<int>* mass) {
+    cout << "Сортировка выбором\n";
     int static_min_on_segment = (*mass)[0];
 
     for (int i = 0; i < (*mass).size(); i++) {
@@ -79,7 +79,10 @@ void selection_sort(vector<int>* mass) {
         swap((*mass)[i], (*mass)[index_min_on_segment]);
         cout << "\n";
         for (int k = 0; k < (*mass).size(); k++) {
-            if ((k == i) || (k == index_min_on_segment)) {
+            if (i == index_min_on_segment) {
+                break;
+            }
+            else if ((k == i) || (k == index_min_on_segment)) {
                 cout << "[" << (*mass)[k] << "]" << " ";
             }
             else {
@@ -87,18 +90,16 @@ void selection_sort(vector<int>* mass) {
             }
         }
         index_min_on_segment = static_min_on_segment;
-        cout << "\n";
     }
     cout << "\n";
-    
-    
 }
 
 int main() {
-    vector<int> mass = { 1, 2, 3, 5, 4 };
+    vector<int> mass = { 9, 8, 7, 6, 5, 4, 3, 2 ,1 };
     setlocale(LC_ALL, "RU");
 
-    selection_sort(&mass);
+    bubble_sort(&mass);
+    //selection_sort(&mass);
 
     menu();
     return 0;
