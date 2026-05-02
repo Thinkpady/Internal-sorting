@@ -9,7 +9,7 @@ void menu() {
 	cout << "2 - buble_sort\n";
 	cout << "3 - selection_sort\n";
 	cout << "3 - insertion_sort\n";
-
+	cout << "4 - тест гита\n";
 }
 
 int main() {
