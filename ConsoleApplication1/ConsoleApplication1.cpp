@@ -10,45 +10,57 @@ void menu() {
     cout << "2 - bubble_sort\n";
     cout << "3 - selection_sort\n";
     cout << "4 - insertion_sort\n";
+    cout << "Пожалуйста, введите цифру для выбора\n";
 }
 
-void show_mass(vector<int> mass) {
-    cout << "Массив: ";
+void print_mass(vector<int> mass){
     for (int i = 0; i < mass.size(); i++) {
         cout << mass[i] << " ";
     }
-    cout << endl;
 }
 
 void bubble_sort(vector<int>* mass) {
+    cout << "Исходный массив: ";
+    print_mass(*mass);
+    cout << "\n";
     for (int i = 0; i < (*mass).size() - 1; i++) {
         bool be_swap = false;
-        for (int j = 0; j < (*mass).size() - i - 1; j++) {
+        int c = 0;
+        for (int j = 0; j < (*mass).size()-1; j++) {
             if ((*mass)[j] > (*mass)[j + 1]) {
                 int temp = (*mass)[j];
                 (*mass)[j] = (*mass)[j + 1];
                 (*mass)[j + 1] = temp;
                 be_swap = true;
+                for (int k = 0; k < (*mass).size(); k++) {
+                    if ((k == j) || (k == j + 1)) {
+                        cout << "[" << (*mass)[k] << "]" << " ";
+                    }
+                    else {
+                        cout << (*mass)[k] << " ";
+                    }
+                }
+                cout << "\n";
+            }
+         }
+
+            if (be_swap == false) {
+                cout << "Сортировка успешно завершена!\n";
+
+                for (int i = 0; i < (*mass).size(); i++) {
+                    cout << (*mass)[i] << " ";
+                }
+                cout << "\n";
+                break;
             }
         }
-        if (be_swap == false) {
-            cout << "Сортировка успешно завершена\n";
-            return;
-        }
     }
-}
 
 int main() {
-    vector<int> mass = { 4, 2, 7, 5, 11 };
+    vector<int> mass = { 9, 8, 7, 6, 5 };
     setlocale(LC_ALL, "RU");
 
-    cout << "Исходный ";
-    show_mass(mass);
-
     bubble_sort(&mass);
-
-    cout << "Отсортированный ";
-    show_mass(mass);
 
     menu();
     return 0;
