@@ -21,6 +21,7 @@ void print_mass(vector<int> mass){
 }
 
 void bubble_sort(vector<int>* mass) {
+    //если левый элемент больше, чем правый они меняются местами
     cout << "Сортировка пузырьком\n";
     cout << "\n";
     for (int i = 0; i < (*mass).size() - 1; i++) {
@@ -57,6 +58,7 @@ void bubble_sort(vector<int>* mass) {
     }
 
 void selection_sort(vector<int>* mass) {
+    //самый минимальный ставим в начальный, потом второй по минимальности на второе место
     cout << "Сортировка выбором\n";
     int static_min_on_segment = (*mass)[0];
 
@@ -94,11 +96,31 @@ void selection_sort(vector<int>* mass) {
     cout << "\n";
 }
 
+void insert_sort(vector<int>* mass) {
+    //берем элемент и несем его в лево до тех пор пока он не станет подходящим
+    cout << "Сортировка вcтавками\n";
+    for (int i = 1; i < (*mass).size(); i++) {
+        int cursor = 0;
+
+        bool be_swap = false;
+        while (((*mass)[i] >= (*mass)[cursor]) && (cursor < i)){
+            cursor++;
+            be_swap = true;
+        }
+    
+        (*mass).insert((*mass).begin() + cursor, (*mass)[i]);
+        (*mass).erase((*mass).begin() + i + 1);
+    }
+    print_mass(*mass);
+    cout << "\n";
+}
+
 int main() {
-    vector<int> mass = { 9, 8, 7, 6, 5, 4, 3, 2 ,1 };
+    vector<int> mass = {1, 1, 5, 3, 6, 7, 12, 9, 11};
     setlocale(LC_ALL, "RU");
 
-    bubble_sort(&mass);
+    insert_sort(&mass);
+    //bubble_sort(&mass);
     //selection_sort(&mass);
 
     menu();
