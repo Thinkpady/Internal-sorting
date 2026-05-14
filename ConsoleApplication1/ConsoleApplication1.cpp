@@ -1,7 +1,7 @@
-﻿#include <iostream>
+#include <iostream>
 #include <clocale>
 #include <vector>
-#include <utility>
+#include <algorithm>
 
 using namespace std;
 
@@ -11,118 +11,202 @@ void menu() {
     cout << "2 - bubble_sort\n";
     cout << "3 - selection_sort\n";
     cout << "4 - insertion_sort\n";
-    cout << "Пожалуйста, введите цифру для выбора\n";
+    cout << "0 - выход\n";
+    cout << "Пожалуйста, введите цифру для выбора: ";
 }
 
-void print_mass(vector<int> mass){
-    for (int i = 0; i < mass.size(); i++) {
+void print_mass(const vector<int>& mass, int sorted_begin = -1, int sorted_end = -1) {
+    if (mass.empty()) {
+        cout << "массив пуст";
+        return;
+    }
+
+    for (int i = 0; i < static_cast<int>(mass.size()); i++) {
+        if (i == sorted_begin) {
+            cout << "[ ";
+        }
+
         cout << mass[i] << " ";
+
+        if (i + 1 == sorted_end) {
+            cout << "] ";
+        }
     }
 }
 
-void bubble_sort(vector<int>* mass) {
-    //если левый элемент больше, чем правый они меняются местами
-    cout << "Сортировка пузырьком\n";
-    cout << "\n";
-    for (int i = 0; i < (*mass).size() - 1; i++) {
-        bool be_swap = false;
-        int c = 0;
-        for (int j = 0; j < (*mass).size()-1; j++) {
-            if ((*mass)[j] > (*mass)[j + 1]) {
-                int temp = (*mass)[j];
-                (*mass)[j] = (*mass)[j + 1];
-                (*mass)[j + 1] = temp;
-                be_swap = true;
-                for (int k = 0; k < (*mass).size(); k++) {
-                    if ((k == j) || (k == j + 1)) {
-                        cout << "[" << (*mass)[k] << "]" << " ";
-                    }
-                    else {
-                        cout << (*mass)[k] << " ";
-                    }
-                }
-                cout << "\n";
-            }
-         }
+void input_mass(vector<int>& mass) {
+    int n;
 
-            if (be_swap == false) {
-                cout << "Сортировка успешно завершена!\n";
+    cout << "Введите количество элементов: ";
+    cin >> n;
 
-                for (int i = 0; i < (*mass).size(); i++) {
-                    cout << (*mass)[i] << " ";
-                }
-                cout << "\n";
-                break;
-            }
-        }
+    if (n <= 0) {
+        cout << "Количество элементов должно быть больше 0.\n";
+        return;
     }
 
-void selection_sort(vector<int>* mass) {
-    //самый минимальный ставим в начальный, потом второй по минимальности на второе место
-    cout << "Сортировка выбором\n";
-    int static_min_on_segment = (*mass)[0];
+    mass.clear();
+    mass.resize(n);
 
-    for (int i = 0; i < (*mass).size(); i++) {
-        static_min_on_segment = max(static_min_on_segment, (*mass)[i]);
+    cout << "Введите элементы массива:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> mass[i];
     }
+}
 
-    for (int i = 0; i < (*mass).size()-1; i++) {
-        int min_on_segment = static_min_on_segment;
-        int index_min_on_segment = 0;
-        bool be_swap = false;
-        for (int j = i; j < (*mass).size(); j++) {
-            if (min_on_segment > (*mass)[j]) {
-                min_on_segment = (*mass)[j];
-                index_min_on_segment = j;
-                be_swap = true;
-            }
-        }
+void bubble_sort(vector<int>& mass) {
+    cout << "\nСортировка пузырьком\n";
 
-        swap((*mass)[i], (*mass)[index_min_on_segment]);
+    int n = static_cast<int>(mass.size());
+
+    if (n < 2) {
+        cout << "Сортировать нечего: ";
+        print_mass(mass, 0, n);
         cout << "\n";
-        for (int k = 0; k < (*mass).size(); k++) {
-            if (i == index_min_on_segment) {
-                break;
-            }
-            else if ((k == i) || (k == index_min_on_segment)) {
-                cout << "[" << (*mass)[k] << "]" << " ";
-            }
-            else {
-                cout << (*mass)[k] << " ";
+        return;
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        bool be_swap = false;
+
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (mass[j] > mass[j + 1]) {
+                swap(mass[j], mass[j + 1]);
+                be_swap = true;
             }
         }
-        index_min_on_segment = static_min_on_segment;
+
+        if (!be_swap) {
+            cout << "Перестановок нет, массив уже отсортирован:\n";
+            print_mass(mass, 0, n);
+            cout << "\n";
+            return;
+        }
+
+        cout << "После прохода " << i + 1 << ": ";
+
+        int sorted_begin = n - i - 1;
+
+        if (i == n - 2) {
+            sorted_begin = 0;
+        }
+
+        print_mass(mass, sorted_begin, n);
+        cout << "\n";
     }
+
+    cout << "Сортировка успешно завершена!\n";
+}
+
+void selection_sort(vector<int>& mass) {
+    cout << "\nСортировка выбором\n";
+
+    int n = static_cast<int>(mass.size());
+
+    if (n < 2) {
+        cout << "Сортировать нечего: ";
+        print_mass(mass, 0, n);
+        cout << "\n";
+        return;
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        int index_min_on_segment = i;
+
+        for (int j = i + 1; j < n; j++) {
+            if (mass[j] < mass[index_min_on_segment]) {
+                index_min_on_segment = j;
+            }
+        }
+
+        if (index_min_on_segment != i) {
+            swap(mass[i], mass[index_min_on_segment]);
+        }
+
+        cout << "После выбора элемента " << i + 1 << ": ";
+        print_mass(mass, 0, i + 1);
+        cout << "\n";
+    }
+
+    cout << "Итог: ";
+    print_mass(mass, 0, n);
     cout << "\n";
 }
 
-void insert_sort(vector<int>* mass) {
-    //берем элемент и несем его в лево до тех пор пока он не станет подходящим
-    cout << "Сортировка вcтавками\n";
-    for (int i = 1; i < (*mass).size(); i++) {
-        int cursor = 0;
+void insertion_sort(vector<int>& mass) {
+    cout << "\nСортировка вставками\n";
 
-        bool be_swap = false;
-        while (((*mass)[i] >= (*mass)[cursor]) && (cursor < i)){
-            cursor++;
-            be_swap = true;
-        }
-    
-        (*mass).insert((*mass).begin() + cursor, (*mass)[i]);
-        (*mass).erase((*mass).begin() + i + 1);
+    int n = static_cast<int>(mass.size());
+
+    if (n < 2) {
+        cout << "Сортировать нечего: ";
+        print_mass(mass, 0, n);
+        cout << "\n";
+        return;
     }
-    print_mass(*mass);
+
+    cout << "Начальная отсортированная часть: ";
+    print_mass(mass, 0, 1);
+    cout << "\n";
+
+    for (int i = 1; i < n; i++) {
+        int current = mass[i];
+        int j = i - 1;
+
+        while (j >= 0 && mass[j] > current) {
+            mass[j + 1] = mass[j];
+            print_mass(mass, 0, i + 1);
+            cout << "\n";
+            j--;
+        }
+
+        mass[j + 1] = current;
+    }
+
+    cout << "Итог: ";
+    print_mass(mass, 0, n);
     cout << "\n";
 }
 
 int main() {
-    vector<int> mass = {1, 1, 5, 3, 6, 7, 12, 9, 11};
-    setlocale(LC_ALL, "RU");
+    setlocale(LC_ALL, "");
 
-    insert_sort(&mass);
-    //bubble_sort(&mass);
-    //selection_sort(&mass);
+    vector<int> mass = { 1, 1, 5, 3, 6, 7, 12, 9, 11 };
 
-    menu();
+    int choice;
+
+    do {
+        menu();
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            input_mass(mass);
+            break;
+
+        case 2:
+            bubble_sort(mass);
+            break;
+
+        case 3:
+            selection_sort(mass);
+            break;
+
+        case 4:
+            insertion_sort(mass);
+            break;
+
+        case 0:
+            cout << "Выход из программы.\n";
+            break;
+
+        default:
+            cout << "Ошибка: такого пункта меню нет.\n";
+        }
+
+        cout << "\n";
+
+    } while (choice != 0);
+
     return 0;
 }
